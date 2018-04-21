@@ -97,10 +97,23 @@ def parse(tokens):
         final_expression = parse_expression(0)[0]
         return final_expression 
 
+def product(tree):
+    prod = tree[0]
+    for val in tree[1:]:
+        prod *= val
+    return prod
+
+def division(tree):
+    div = tree[0]
+    for val in tree[1:]:
+        div /= val
+    return div
 
 carlae_builtins = {
     '+': sum,
     '-': lambda args: -args[0] if len(args) == 1 else (args[0] - sum(args[1:])),
+    "*": lambda args: product(args),
+    "/": lambda args: division(args)
 }
 
 
