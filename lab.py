@@ -113,10 +113,30 @@ def evaluate(tree):
         tree (type varies): a fully parsed expression, as the output from the
                             parse function
     """
-    raise NotImplementedError
+    
+    if isinstance(tree, list):
+        if tree[0] not in carlae_builtins:
+            raise EvaluationError ("symbol not in carlae builtins")
+        else:
+            func = carlae_builtins[tree[0]]
+            evaled_list = []
+            for elt in tree[1:]:
+                evaled_list.append(evaluate(elt))
+            return func(evaled_list)
+    else:
+        return tree
 
+def REPL():
+    user_input = input("in> ")
+    while user_input != "QUIT":
+        tokens = tokenize(user_input)
+        parsed = parse(tokens)
+        result = evaluate(parsed)
+        print ("out> "+str(result))
+        user_input = input("in> ")
+            
 
 if __name__ == '__main__':
     # code in this block will only be executed if lab.py is the main file being
     # run (not when this module is imported)
-    pass
+    REPL()
