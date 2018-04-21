@@ -117,7 +117,7 @@ carlae_builtins = {
 }
 
 
-def evaluate(tree):
+def evaluate(tree, assignment={}):
     """
     Evaluate the given syntax tree according to the rules of the carlae
     language.
@@ -128,7 +128,10 @@ def evaluate(tree):
     """
     
     if isinstance(tree, list):
-        if tree[0] not in carlae_builtins:
+        if tree[0] == "define":
+            assignment[tree[1]] = tree[2]
+            return tree[2]
+        elif tree[0] not in carlae_builtins:
             raise EvaluationError ("symbol not in carlae builtins")
         else:
             func = carlae_builtins[tree[0]]
@@ -137,7 +140,11 @@ def evaluate(tree):
                 evaled_list.append(evaluate(elt))
             return func(evaled_list)
     else:
-        return tree
+        if isinstance(tree, int) or isinstance(tree, float):
+            return tree
+        else:
+            if tree in assignment:
+                return assignment[tree]
 
 def REPL():
     user_input = input("in> ")
