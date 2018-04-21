@@ -86,13 +86,7 @@ def parse(tokens):
             return answer, i+1
         else:
             try:
-                float_expression = float(tokens[index])
-                int_expression = int(tokens[index])
-                try:
-                    if float_expression == int_expression:
-                        expression = int_expression
-                except:
-                    expression = float_expression
+                expression = float(tokens[index])
             except:
                 expression = tokens[index]
             return expression, index+1
@@ -125,4 +119,4 @@ def evaluate(tree):
 if __name__ == '__main__':
     # code in this block will only be executed if lab.py is the main file being
     # run (not when this module is imported)
-    print (parse(['(', '+', '2', '(', '-', '5', '3', ')', '7', '8', ')']))
+    pass
