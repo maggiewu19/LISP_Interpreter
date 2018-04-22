@@ -117,7 +117,7 @@ carlae_builtins = {
 }
 
 
-def evaluate(tree):
+def evaluate(tree, environment=None):
     """
     Evaluate the given syntax tree according to the rules of the carlae
     language.
@@ -126,30 +126,64 @@ def evaluate(tree):
         tree (type varies): a fully parsed expression, as the output from the
                             parse function
     """
-    
-    if isinstance(tree, list):
-        if tree[0] not in carlae_builtins:
-            raise EvaluationError ("symbol not in carlae builtins")
-        else:
-            func = carlae_builtins[tree[0]]
-            evaled_list = []
-            for elt in tree[1:]:
-                evaled_list.append(evaluate(elt))
-            return func(evaled_list)
-    else:
-        return tree
+    return result_and_env(tree)[0]
 
-def REPL():
+class Environment(object):
+    def __init__(self, parent=None):
+        self.parent = parent
+        self.assignment = dict()
+
+    def lookup(self, var):
+        if var in self.assignment:
+            return self.assignment[var]
+        elif self.parent == None:
+            raise EvaluationError ("variable has not been defined")
+        else:
+            return self.parent.lookup(var)
+
+def result_and_env(tree, environment=None):
+    def eval_env(tree, environment):
+        if isinstance(tree, list):
+            if tree[0] == "define":
+                assigned = eval_env(tree[2], environment)
+                environment.assignment[tree[1]] = assigned
+                return assigned
+
+            try:
+                func = environment.lookup(tree[0])
+                evaled_list = []
+                for elt in tree[1:]:
+                    evaled_list.append(eval_env(elt, environment))
+                return func(evaled_list)
+            except:
+                raise EvaluationError ("symbol not in carlae builtins")
+        else:
+            if isinstance(tree, (int, float)):
+                return tree
+            return environment.lookup(tree)
+
+    if environment == None:
+        environment = Environment(carlae_environment)
+        
+    return eval_env(tree, environment), environment
+
+def REPL(environment=None):
     user_input = input("in> ")
+    if environment == None:
+        environment = Environment(carlae_environment)
+        
     while user_input != "QUIT":
         tokens = tokenize(user_input)
         parsed = parse(tokens)
-        result = evaluate(parsed)
+        result = evaluate(parsed, environment)
         print ("out> "+str(result))
         user_input = input("in> ")
-            
+
+carlae_environment = Environment()
+carlae_environment.assignment = carlae_builtins
 
 if __name__ == '__main__':
     # code in this block will only be executed if lab.py is the main file being
     # run (not when this module is imported)
     REPL()
+    

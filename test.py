@@ -101,26 +101,26 @@ class Test1_Parse(LispTest):
         self.run_test_number(3, lambda i: lab.parse(lab.tokenize(i)))
 
 
-##class Test2_Eval(LispTest):
-##    def test_04_calc(self):
-##        self.run_test_number(4, lab.evaluate)
-##
-##    def test_05_mult_div(self):
-##        self.run_test_number(5, lab.evaluate)
-##
-##    def test_06_simple_assignment(self):
-##        self._test_continued_evaluations(6)
-##
-##    def test_07_simple_assignment(self):
-##        self._test_continued_evaluations(7)
-##
-##    def test_08_bad_lookups(self):
-##        self._test_continued_evaluations(8)
-##
-##    def test_09_rename_builtin(self):
-##        self._test_continued_evaluations(9)
-##
-##
+class Test2_Eval(LispTest):
+    def test_04_calc(self):
+        self.run_test_number(4, lab.evaluate)
+
+    def test_05_mult_div(self):
+        self.run_test_number(5, lab.evaluate)
+
+    def test_06_simple_assignment(self):
+        self._test_continued_evaluations(6)
+
+    def test_07_simple_assignment(self):
+        self._test_continued_evaluations(7)
+
+    def test_08_bad_lookups(self):
+        self._test_continued_evaluations(8)
+
+    def test_09_rename_builtin(self):
+        self._test_continued_evaluations(9)
+
+
 ##class Test3_Func(LispTest):
 ##    def test_10_simple_function(self):
 ##        self._test_continued_evaluations(10)
