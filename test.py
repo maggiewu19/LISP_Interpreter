@@ -121,17 +121,17 @@ class Test2_Eval(LispTest):
         self._test_continued_evaluations(9)
 
 
-##class Test3_Func(LispTest):
-##    def test_10_simple_function(self):
-##        self._test_continued_evaluations(10)
-##
-##    def test_11_inline_lambda(self):
-##        self._test_continued_evaluations(11)
-##
-##    def test_12_closures(self):
-##        self._test_continued_evaluations(12)
-##
-##
+class Test3_Func(LispTest):
+    def test_10_simple_function(self):
+        self._test_continued_evaluations(10)
+
+    def test_11_inline_lambda(self):
+        self._test_continued_evaluations(11)
+
+    def test_12_closures(self):
+        self._test_continued_evaluations(12)
+
+
 ##class Test4_All(LispTest):
 ##    def test_13_short_definition(self):
 ##        self._test_continued_evaluations(13)
