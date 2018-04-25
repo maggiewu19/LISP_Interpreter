@@ -132,48 +132,48 @@ class Test3_Func(LispTest):
         self._test_continued_evaluations(12)
 
 
-##class Test4_All(LispTest):
-##    def test_13_short_definition(self):
-##        self._test_continued_evaluations(13)
-##
-##    def test_14_dependent_definition(self):
-##        self._test_continued_evaluations(14)
-##
-##    def test_15_scoping_1(self):
-##        self._test_continued_evaluations(15)
-##
-##    def test_16_scoping_2(self):
-##        self._test_continued_evaluations(16)
-##
-##    def test_17_scoping_3(self):
-##        self._test_continued_evaluations(17)
-##
-##    def test_18_scoping_4(self):
-##        self._test_continued_evaluations(18)
-##
-##    def test_19_scoping_5(self):
-##        self._test_continued_evaluations(19)
-##
-##    def test_20_calling_errors(self):
-##        self._test_continued_evaluations(20)
-##
-##    def test_21_functionception(self):
-##        self._test_continued_evaluations(21)
-##
-##    def test_22_alias(self):
-##        self._test_continued_evaluations(22)
-##
-##    def test_23_big_scoping_1(self):
-##        self._test_continued_evaluations(23)
-##
-##    def test_24_big_scoping_2(self):
-##        self._test_continued_evaluations(24)
-##
-##    def test_25_big_scoping_3(self):
-##        self._test_continued_evaluations(25)
-##
-##    def test_26_big_scoping_4(self):
-##        self._test_continued_evaluations(26)
+class Test4_All(LispTest):
+    def test_13_short_definition(self):
+        self._test_continued_evaluations(13)
+
+    def test_14_dependent_definition(self):
+        self._test_continued_evaluations(14)
+
+    def test_15_scoping_1(self):
+        self._test_continued_evaluations(15)
+
+    def test_16_scoping_2(self):
+        self._test_continued_evaluations(16)
+
+    def test_17_scoping_3(self):
+        self._test_continued_evaluations(17)
+
+    def test_18_scoping_4(self):
+        self._test_continued_evaluations(18)
+
+    def test_19_scoping_5(self):
+        self._test_continued_evaluations(19)
+
+    def test_20_calling_errors(self):
+        self._test_continued_evaluations(20)
+
+    def test_21_functionception(self):
+        self._test_continued_evaluations(21)
+
+    def test_22_alias(self):
+        self._test_continued_evaluations(22)
+
+    def test_23_big_scoping_1(self):
+        self._test_continued_evaluations(23)
+
+    def test_24_big_scoping_2(self):
+        self._test_continued_evaluations(24)
+
+    def test_25_big_scoping_3(self):
+        self._test_continued_evaluations(25)
+
+    def test_26_big_scoping_4(self):
+        self._test_continued_evaluations(26)
 
 
 if __name__ == '__main__':
