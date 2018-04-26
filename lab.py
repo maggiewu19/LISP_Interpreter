@@ -73,12 +73,14 @@ def parse(tokens):
         if tokens[0] != "(" and len(tokens) > 1:
             return False
         
-        for char in tokens:
-            if char == "(":
+        for char in range(len(tokens)):
+            if tokens[char] == "(":
                 count += 1
-            elif char == ")":
+            elif tokens[char] == ")":
                 count -= 1
                 if count < 0:
+                    return False
+                if count == 0 and char != len(tokens)-1:
                     return False
 
         if count != 0:
@@ -110,8 +112,16 @@ def parse(tokens):
             # see if token should be float or string
             try:
                 expression = float(tokens[index])
+                int_float = True
             except:
                 expression = tokens[index]
+                int_float = False
+
+            # float vs int 
+            if int_float:
+                if int(float(tokens[index])) == float(tokens[index]):
+                    expression = int(tokens[index])
+                
             return expression, index+1
 
     if not is_valid():
@@ -274,5 +284,4 @@ if __name__ == '__main__':
     # code in this block will only be executed if lab.py is the main file being
     # run (not when this module is imported)
     REPL()
-    
 
