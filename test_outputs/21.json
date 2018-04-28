@@ -1,26 +1,26 @@
 [
   {
-    "output": "SOMETHING",
-    "ok": true
+    "ok": true,
+    "output": "SOMETHING"
   },
   {
-    "output": 2,
-    "ok": true
+    "ok": true,
+    "output": 2
   },
   {
-    "output": "SOMETHING",
-    "ok": true
+    "ok": true,
+    "output": "SOMETHING"
   },
   {
-    "output": 2,
-    "ok": true
+    "ok": true,
+    "output": 2
   },
   {
-    "type": "EvaluationError",
-    "ok": false
+    "ok": false,
+    "type": "EvaluationError"
   },
   {
-    "type": "EvaluationError",
-    "ok": false
+    "ok": false,
+    "type": "EvaluationError"
   }
 ]

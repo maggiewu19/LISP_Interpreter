@@ -30,9 +30,5 @@
   {
     "ok": true,
     "output": -21
-  },
-  {
-    "ok": false,
-    "type": "EvaluationError"
   }
 ]

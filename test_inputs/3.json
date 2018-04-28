@@ -14,5 +14,14 @@
   "(weird          white\n                 space)",
   "(w3!|]\\d5y8[]1$)",
   "(nested (expressions (test) (is here) ((((now))))))",
-  "define x 3"
+  "define x 3",
+  "(1 2 3 4)",
+  "(1 2 3 4) 7",
+  "((cat)(dog))",
+  "(x)",
+  "y 14",
+  "(y 14)",
+  "(y 14) (x)",
+  "x (+ y z)",
+  "(+ y z) x"
 ]

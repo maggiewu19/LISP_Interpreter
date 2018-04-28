@@ -108,9 +108,5 @@
         ]
       ]
     ]
-  },
-  {
-    "ok": false,
-    "type": "SyntaxError"
   }
 ]

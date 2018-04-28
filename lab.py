@@ -142,11 +142,42 @@ def division(tree):
         div /= val
     return div
 
+def boolean_statement(tree, op):
+    if len(tree) == 1:
+        return True
+
+    for val in range(len(tree)-1):
+        if op == "=?":
+            if tree[val] != tree[val+1]:
+                return False
+        elif op == ">":
+            if tree[val] <= tree[val+1]:
+                return False
+        elif op == ">=":
+            if tree[val] < tree[val+1]:
+                return False
+        elif op == "<":
+            if tree[val] >= tree[val+1]:
+                return False
+        elif op == "<=":
+            if tree[val] > tree[val+1]:
+                return False
+            
+    return True
+        
+
 carlae_builtins = {
     '+': sum,
     '-': lambda args: -args[0] if len(args) == 1 else (args[0] - sum(args[1:])),
     "*": lambda args: product(args),
-    "/": lambda args: division(args)
+    "/": lambda args: division(args),
+    "#f": False,
+    "#t": True, 
+    "=?": lambda args: boolean_statement(args, "=?"),
+    ">": lambda args: boolean_statement(args, ">"),
+    ">=": lambda args: boolean_statement(args, ">="),
+    "<": lambda args: boolean_statement(args, "<"),
+    "<=": lambda args: boolean_statement(args, "<=")
 }
 
 
@@ -185,6 +216,7 @@ def evaluate(tree, environment=None):
             assigned = evaluate(tree[2], environment)
             environment.assignment[tree[1]] = assigned
             return assigned
+        
         elif tree[0] == "lambda":
             param = tree[1]
             func = tree[2]
@@ -192,6 +224,32 @@ def evaluate(tree, environment=None):
             # create LISP function with corresponding parameters
             lisp_func = LISP_Functions(param, func, environment)
             return lisp_func
+
+        elif tree[0] == "cons":
+            pass
+
+        elif tree[0] == "if":
+            if evaluate(tree[1], environment):
+                return evaluate(tree[2], environment)
+            return evaluate(tree[3], environment)
+
+        elif tree[0] == "and":
+            for val in tree[1:]:
+                if not evaluate(val, environment):
+                    return False
+            return True
+            
+        elif tree[0] == "or":
+            for val in tree[1:]:
+                if evaluate(val, environment):
+                    return True
+            return False
+
+        elif tree[0] == "not":
+            if not evaluate(tree[1], environment):
+                return True
+            return False
+            
 
         # inline lambda 
         elif isinstance(tree[0], list):
@@ -250,6 +308,11 @@ class LISP_Functions(object):
         for v in range(len(self.variables)):
             new_env.assignment[self.variables[v]] = args[v]
         return evaluate(self.function, new_env)
+
+class Pair(object):
+    def __init__(self, car, cdr):
+        self.car = car
+        self.cdr = cdr
         
 
 def result_and_env(tree, environment=None):

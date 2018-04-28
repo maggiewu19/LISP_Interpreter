@@ -18,9 +18,21 @@
       "somevariable"
     ]
   ],
-  ["define", "x", 2],
-  ["define", "y", "x"],
-  ["define", "x", 3],
+  [
+    "define",
+    "x",
+    2
+  ],
+  [
+    "define",
+    "y",
+    "x"
+  ],
+  [
+    "define",
+    "x",
+    3
+  ],
   "x",
   "y"
 ]

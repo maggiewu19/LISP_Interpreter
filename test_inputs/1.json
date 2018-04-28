@@ -13,5 +13,6 @@
   "(multiline ; with comments\n statement) ; with comments",
   "(weird          white\n                 space)",
   "(w3!|]\\d5y8[]1$)",
-  "(nested (expressions (test) (is here) ((((now))))))"
+  "(nested (expressions (test) (is here) ((((now))))))",
+  "(nested;comment (expressions (test) (is here) ((((now))))))"
 ]
