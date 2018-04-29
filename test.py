@@ -61,7 +61,9 @@ class LispTest(unittest.TestCase):
     @staticmethod
     def _test_file(fname, num):
         try:
+            #print (os.path.join('test_files', fname))
             out = lab.evaluate_file(os.path.join('test_files', fname))
+            #print ('out',out)
             out = list_from_ll(out)
             out = {'ok': True, 'output': out}
         except Exception as e:
@@ -119,12 +121,18 @@ class LispTest(unittest.TestCase):
         inp, out = self.load_test_values(n)
         results = self.run_continued_evaluations(inp)
         for result, expected in zip(results, out):
+            print ('-----------------------------')
+            print (result, expected)
             self._compare_outputs(result, expected)
 
     def run_test_number(self, n, func):
         tester = self.make_tester(func)
         inp, out = self.load_test_values(n)
         for i, o in zip(inp, out):
+            print ('_____________________________________________')
+            print (i,'input')
+            print (tester(i),'result')
+            print(o,'expected')
             self._compare_outputs(tester(i), o)
 
 
@@ -250,9 +258,9 @@ class LispTest(unittest.TestCase):
 ##
 ##    def test_40_conditional_scoping_2(self):
 ##        self._test_continued_evaluations(40)
-##
-##
-##class Test3_Lists(LispTest):
+
+
+class Test3_Lists(LispTest):
 ##    def test_41_cons_lists(self):
 ##        self._test_continued_evaluations(41)
 ##
@@ -267,16 +275,16 @@ class LispTest(unittest.TestCase):
 ##
 ##    def test_45_indexing(self):
 ##        self._test_continued_evaluations(45)
-##
-##    def test_46_concat(self):
-##        self._test_continued_evaluations(46)
-##
+
+    def test_46_concat(self):
+        self._test_continued_evaluations(46)
+
 ##    def test_47_list_ops(self):
 ##        self._test_continued_evaluations(47)
 ##
 ##    def test_48_map_builtin(self):
 ##        self._test_continued_evaluations(48)
-##
+###
 ##    def test_49_map_carlaefunc(self):
 ##        self._test_continued_evaluations(49)
 ##
@@ -308,7 +316,7 @@ class LispTest(unittest.TestCase):
 ##
 ##    def test_58_setbang(self):
 ##        self._test_continued_evaluations(58)
-##
+###
 ##    def test_59_begin(self):
 ##        self._test_continued_evaluations(59)
 ##

@@ -164,6 +164,70 @@ def boolean_statement(tree, op):
                 return False
             
     return True
+
+def make_list(tree):
+    if tree == []:
+        return 'none'
+    if len(tree) == 1:
+        return Pair(tree[0], 'none')
+
+    return Pair(tree[0], make_list(tree[1:]))
+
+def list_length(pair):
+    if pair == []:
+        return 0
+    if pair.cdr == 'none':
+        return 1
+    if isinstance(pair.cdr, (int, float)):
+        raise EvaluationError
+
+    return 1 + list_length(pair.cdr)
+
+def elt_at_index(pair, index):
+    if isinstance(pair, Pair):
+        if index == 0:
+            return pair.car
+    return elt_at_index(pair.cdr, index-1)
+
+def concat(pairs):
+    print('pairs:', pairs)
+    if len(pairs) == 2:
+        if pairs[0] == 'none':
+            return pairs[1]
+        elif pairs[1] == 'none':
+            return pairs[0]
+        
+        next_cdr = pairs[0]
+        while isinstance(next_cdr.cdr, Pair):
+            next_cdr = next_cdr.cdr
+        if isinstance(next_cdr.cdr, (int, float)):
+            raise EvaluationError
+        
+        next_cdr.cdr = pairs[1]
+        return pairs[0]
+
+    first_pair = [concat([pairs[0],pairs[1]])]
+    print ('first_pair', first_pair)
+    return concat(first_pair+pairs[2:])
+
+def copy_pair(pair):
+    if pair == 'none':
+        return 'none'
+    if isinstance(pair.cdr, Pair):
+        copy = Pair('nil', 'nil')
+        copy.car = pair.car
+        copy.cdr = copy_pair(pair.cdr)
+        return copy
+    return Pair(pair.car, pair.cdr)
+
+def is_list(pair):
+    if pair.cdr == 'nil':
+        return True
+    if isinstance(pair.cdr, (int, float)):
+        return False
+    
+    while isinstance(pair.cdr, Pair):
+        return is_list(pair.cdr)
         
 
 carlae_builtins = {
@@ -177,7 +241,8 @@ carlae_builtins = {
     ">": lambda args: boolean_statement(args, ">"),
     ">=": lambda args: boolean_statement(args, ">="),
     "<": lambda args: boolean_statement(args, "<"),
-    "<=": lambda args: boolean_statement(args, "<=")
+    "<=": lambda args: boolean_statement(args, "<="),
+    "nil": 'none'
 }
 
 
@@ -195,87 +260,150 @@ def evaluate(tree, environment=None):
     if environment == None:
         environment = Environment(carlae_environment)
 
-    # if input is a list 
-    if isinstance(tree, list):
+    try:
+        # if input is a list 
+        if isinstance(tree, list):
 
-        # take care of empty list 
-        if len(tree) == 0:
-            raise EvaluationError
+            # take care of empty list 
+            if len(tree) == 0:
+                raise EvaluationError
 
-        if tree[0] == "define":
 
-            # easier function format: convert to original format
-            if isinstance(tree[1], list):
-                func_name = tree[1][0]
-                args = tree[1][1:].copy()
-                op = tree[2].copy()
-                tree[1] = func_name
-                tree[2] = ['lambda', args, op]
+            if tree[0] == "define":
 
-            # regular define function
-            assigned = evaluate(tree[2], environment)
-            environment.assignment[tree[1]] = assigned
-            return assigned
-        
-        elif tree[0] == "lambda":
-            param = tree[1]
-            func = tree[2]
+                # easier function format: convert to original format
+                if isinstance(tree[1], list):
+                    func_name = tree[1][0]
+                    args = tree[1][1:].copy()
+                    op = tree[2].copy()
+                    tree[1] = func_name
+                    tree[2] = ['lambda', args, op]
 
-            # create LISP function with corresponding parameters
-            lisp_func = LISP_Functions(param, func, environment)
-            return lisp_func
-
-        elif tree[0] == "cons":
-            pass
-
-        elif tree[0] == "if":
-            if evaluate(tree[1], environment):
-                return evaluate(tree[2], environment)
-            return evaluate(tree[3], environment)
-
-        elif tree[0] == "and":
-            for val in tree[1:]:
-                if not evaluate(val, environment):
-                    return False
-            return True
+                # regular define function
+                assigned = evaluate(tree[2], environment)
+                environment.assignment[tree[1]] = assigned
+                return assigned
             
-        elif tree[0] == "or":
-            for val in tree[1:]:
-                if evaluate(val, environment):
-                    return True
-            return False
+            elif tree[0] == "lambda":
+                param = tree[1]
+                func = tree[2]
 
-        elif tree[0] == "not":
-            if not evaluate(tree[1], environment):
+                # create LISP function with corresponding parameters
+                return LISP_Functions(param, func, environment)
+
+            elif tree[0] == "cons":
+                car = tree[1]
+                cdr = evaluate(tree[2], environment)
+                return Pair(car, cdr)
+
+
+            if tree[0] == "car":
+                pair = evaluate(tree[1], environment)
+                if isinstance(pair, Pair):
+                    return pair.car
+                else:
+                    raise EvaluationError
+
+            elif tree[0] == "cdr":
+                pair = evaluate(tree[1], environment)
+                if isinstance(pair, Pair):
+                    return pair.cdr
+                else:
+                    raise EvaluationError
+
+            if tree[0] == "length":
+                list_arg = evaluate(tree[1], environment)
+                if list_arg == 'none':
+                    return 0
+                
+                if isinstance(list_arg, Pair):
+                    return list_length(list_arg)
+                else:
+                    raise EvaluationError
+
+            if tree[0] == "elt-at-index":
+                list_arg = evaluate(tree[1], environment)
+                index = tree[2]
+                return elt_at_index(list_arg, index)
+
+            if tree[0] == "concat":
+                
+                if len(tree) == 1:
+                    return 'none'
+                
+                if len(tree) == 2:
+                    pair = evaluate(tree[1], environment)
+                    print ('pair', pair)
+                    if isinstance(pair, Pair):
+                        return pair
+                    else:
+                        raise EvaluationError
+
+                args = tree[1:]
+                pairs = [evaluate(arg, environment) for arg in args]
+                    
+                pairs_copy = []
+                for p in pairs:
+                    print (p)
+                    pairs_copy.append(copy_pair(p))
+                return concat(pairs_copy)
+
+            if tree[0] == "list":
+                args = tree[1:]
+                val = [evaluate(arg, environment) for arg in args]
+                return make_list(val)
+                
+
+            if tree[0] == "if":
+                if evaluate(tree[1], environment):
+                    return evaluate(tree[2], environment)
+                return evaluate(tree[3], environment)
+
+            elif tree[0] == "and":
+                for val in tree[1:]:
+                    if not evaluate(val, environment):
+                        return False
                 return True
-            return False
-            
+                
+            elif tree[0] == "or":
+                for val in tree[1:]:
+                    if evaluate(val, environment):
+                        return True
+                return False
 
-        # inline lambda 
-        elif isinstance(tree[0], list):
-            sub_tree = tree[0]
-            args = tree[1:]
-            lambda_func = evaluate(sub_tree, environment)
-            values = [evaluate(arg, environment) for arg in args]
-            return lambda_func(values)
+            elif tree[0] == "not":
+                if not evaluate(tree[1], environment):
+                    return True
+                return False
+                
 
-        # try adding to the list for operation
-        try:
-            func = environment.lookup(tree[0])
-            evaled_list = []
-            for elt in tree[1:]:
-                evaled_list.append(evaluate(elt, environment))
+            # inline lambda 
+            elif isinstance(tree[0], list):
+                sub_tree = tree[0]
+                args = tree[1:]
+                lambda_func = evaluate(sub_tree, environment)
+                values = [evaluate(arg, environment) for arg in args]
+                return lambda_func(values)
 
-            # operate with all variables
-            return func(evaled_list)
-        except:
-            raise EvaluationError
+            # try adding to the list for operation
+            try:
+                func = environment.lookup(tree[0])
+                evaled_list = []
+                for elt in tree[1:]:
+                    evaled_list.append(evaluate(elt, environment))
 
-    # evaluate individual character
-    else:
-        if isinstance(tree, (int, float)):
-            return tree
-        return environment.lookup(tree)
+                # operate with all variables
+                return func(evaled_list)
+            except:
+                raise EvaluationError
+
+        # evaluate individual character
+        else:
+            if isinstance(tree, (int, float)):
+                return tree
+            return environment.lookup(tree)
+    except:
+        raise EvaluationError
 
 
 class Environment(object):
